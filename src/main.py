@@ -52,13 +52,21 @@ def displayNextGame(userTeamNextgame):
         print(f"Time: {datetime.fromtimestamp(games['startTimestamp']).strftime('%H:%M')}\n")
 
 
+def displayPreviousGame(userTeamPreviousgame):
+    print("\n--------Previous Match Info--------")
+    for games in userTeamPreviousgame["events"][:3]:
+        print(f"{games['homeTeam']['name']} vs {games['awayTeam']['name']}")
+        print(f"Date: {datetime.fromtimestamp(games['startTimestamp']).strftime('%Y-%m-%d')}")
+        print(f"Time: {datetime.fromtimestamp(games['startTimestamp']).strftime('%H:%M')}\n")
 
 
 def main():
     teamData = fetchAPI("tournament/132/season/45096/standings/total")
     saveTeams(teamData)
     userTeam = uservalidation()
+    userTeamPreviousgame = fetchAPI(f"team/{userTeam['team']['id']}/matches/previous/0")
     userTeamNextgame = fetchAPI(f"team/{userTeam['team']['id']}/matches/next/0")
+    displayPreviousGame(userTeamPreviousgame)
     displayNextGame(userTeamNextgame)
 
 
