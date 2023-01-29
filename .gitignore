@@ -1,2 +1,4 @@
+# .gitignore
 .DS_Store
 .idea
+config.py
