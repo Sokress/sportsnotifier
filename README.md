@@ -14,7 +14,7 @@ A Python script that allows you to select your favorite NBA team and displays th
 
 ```config.py
 api_key = "<your_api_key>"
-api_host = "<your_api_host>"
+api_host = "basketapi1.p.rapidapi.com"
 ```
 3. Run `main.py`: `python main.py`
 4. Select your favorite team from the list.
