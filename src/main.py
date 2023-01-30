@@ -2,8 +2,35 @@ import sys
 import requests
 import config
 from datetime import datetime
+from twilio.rest import Client
 
 NBATEAMS = []
+
+
+
+def sendWhatsapp(body, number=config.rushelNR, whatsapp=False):
+    client = Client(config.account_sid, config.auth_token)
+    if whatsapp:
+        message = client.messages.create(
+            from_='whatsapp:+16695872538',
+            body=body,
+            to=f'whatsapp:{number}'
+        )
+    else:
+        message = client.messages.create(
+            messaging_service_sid='MGa03eb0d769cf5eb5ddf2ab423a1b4e5d',
+            body=body,
+            to=number
+        )
+    print(message.sid)
+def sendSMS(body, number=config.rushelNR):
+    client = Client(config.account_sid, config.auth_token)
+    message = client.messages.create(
+        messaging_service_sid='MGa03eb0d769cf5eb5ddf2ab423a1b4e5d',
+        body=body,
+        to=number
+    )
+    print(message.sid)
 
 
 def fetchAPI(api):
@@ -30,6 +57,7 @@ def displayTeams():
     for i, team in enumerate(NBATEAMS):
         print(f"{i + 1}. {team['team']['name']}")
 
+
 def uservalidation():
     displayTeams()
     while True:
@@ -45,12 +73,14 @@ def uservalidation():
 
 
 def displayNextGame(userTeamNextgame):
-    print("\n--------Next Match Info--------")
+    stringbody = "\n--------Next Match Info--------"
     for games in userTeamNextgame["events"][:5]:
-        print(f"{games['homeTeam']['name']} vs {games['awayTeam']['name']}")
-        print(f"Date: {datetime.fromtimestamp(games['startTimestamp']).strftime('%Y-%m-%d')}")
-        print(f"Time: {datetime.fromtimestamp(games['startTimestamp']).strftime('%H:%M')}\n")
-
+        stringbody += f"\n{games['homeTeam']['name']} vs {games['awayTeam']['name']}"
+        stringbody += f"\nDate: {datetime.fromtimestamp(games['startTimestamp']).strftime('%Y-%m-%d')}"
+        stringbody += f"\nTime: {datetime.fromtimestamp(games['startTimestamp']).strftime('%H:%M')}\n"
+    print(stringbody)
+    sendSMS(stringbody, config.rushelNR)
+    #sendWhatsapp(stringbody, config.thuviNr)
 
 def displayPreviousGame(userTeamPreviousgame):
     print("\n--------Previous Match Info--------")
@@ -68,7 +98,6 @@ def main():
     userTeamNextgame = fetchAPI(f"team/{userTeam['team']['id']}/matches/next/0")
     displayPreviousGame(userTeamPreviousgame)
     displayNextGame(userTeamNextgame)
-
 
 
 if __name__ == "__main__":

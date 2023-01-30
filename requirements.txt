@@ -1,0 +1,5 @@
+requests==2.28.2
+config==0.5.1
+DateTime==5.0
+twilio==7.16.2
+clients==1.4
