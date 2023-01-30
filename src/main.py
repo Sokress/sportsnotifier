@@ -8,11 +8,11 @@ NBATEAMS = []
 
 
 
-def sendWhatsapp(body, number=config.rushelNR, whatsapp=False):
+def sendSMS(body, number=config.rushelNR, whatsapp=False):
     client = Client(config.account_sid, config.auth_token)
     if whatsapp:
         message = client.messages.create(
-            from_='whatsapp:+16695872538',
+            from_='whatsapp:+14155238886',
             body=body,
             to=f'whatsapp:{number}'
         )
@@ -23,15 +23,6 @@ def sendWhatsapp(body, number=config.rushelNR, whatsapp=False):
             to=number
         )
     print(message.sid)
-def sendSMS(body, number=config.rushelNR):
-    client = Client(config.account_sid, config.auth_token)
-    message = client.messages.create(
-        messaging_service_sid='MGa03eb0d769cf5eb5ddf2ab423a1b4e5d',
-        body=body,
-        to=number
-    )
-    print(message.sid)
-
 
 def fetchAPI(api):
     response = requests.get(
@@ -73,14 +64,15 @@ def uservalidation():
 
 
 def displayNextGame(userTeamNextgame):
-    stringbody = "\n--------Next Match Info--------"
+    stringbody = "\n"
+    stringbody += "\n--------Next Match Info--------\n"
     for games in userTeamNextgame["events"][:5]:
         stringbody += f"\n{games['homeTeam']['name']} vs {games['awayTeam']['name']}"
         stringbody += f"\nDate: {datetime.fromtimestamp(games['startTimestamp']).strftime('%Y-%m-%d')}"
         stringbody += f"\nTime: {datetime.fromtimestamp(games['startTimestamp']).strftime('%H:%M')}\n"
     print(stringbody)
     sendSMS(stringbody, config.rushelNR)
-    #sendWhatsapp(stringbody, config.thuviNr)
+    sendSMS(stringbody, config.rushelNR, True)
 
 def displayPreviousGame(userTeamPreviousgame):
     print("\n--------Previous Match Info--------")
