@@ -76,7 +76,7 @@ def displayNextGame(userTeamNextgame):
 
 def displayPreviousGame(userTeamPreviousgame):
     print("\n--------Previous Match Info--------")
-    for games in userTeamPreviousgame["events"][:3]:
+    for games in userTeamPreviousgame["events"][-5:]:
         print(f"{games['homeTeam']['name']} vs {games['awayTeam']['name']}")
         print(f"Date: {datetime.fromtimestamp(games['startTimestamp']).strftime('%Y-%m-%d')}")
         print(f"Time: {datetime.fromtimestamp(games['startTimestamp']).strftime('%H:%M')}\n")
