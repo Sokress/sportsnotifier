@@ -74,12 +74,17 @@ def displayNextGame(userTeamNextgame):
     sendSMS(stringbody, config.rushelNR)
     sendSMS(stringbody, config.rushelNR, True)
 
+
 def displayPreviousGame(userTeamPreviousgame):
-    print("\n--------Previous Match Info--------")
+    stringbody = "\n"
+    stringbody += "\n--------Previous Match Info--------\n"
     for games in userTeamPreviousgame["events"][-5:]:
-        print(f"{games['homeTeam']['name']} vs {games['awayTeam']['name']}")
-        print(f"Date: {datetime.fromtimestamp(games['startTimestamp']).strftime('%Y-%m-%d')}")
-        print(f"Time: {datetime.fromtimestamp(games['startTimestamp']).strftime('%H:%M')}\n")
+        stringbody += f"{games['homeTeam']['name']} vs {games['awayTeam']['name']}"
+        stringbody += f"Date: {datetime.fromtimestamp(games['startTimestamp']).strftime('%Y-%m-%d')}"
+        stringbody += f"Time: {datetime.fromtimestamp(games['startTimestamp']).strftime('%H:%M')}\n"
+    print(stringbody)
+    sendSMS(stringbody, config.rushelNR)
+    sendSMS(stringbody, config.rushelNR, True)
 
 
 def main():
