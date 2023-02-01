@@ -5,7 +5,7 @@ from datetime import datetime
 from twilio.rest import Client
 
 NBATEAMS = []
-
+ISOFFINE = False
 
 
 def sendSMS(body, number=config.rushelNR, whatsapp=False):
@@ -24,17 +24,25 @@ def sendSMS(body, number=config.rushelNR, whatsapp=False):
         )
     print(message.sid)
 
-def fetchAPI(api):
-    response = requests.get(
-        f"https://basketapi1.p.rapidapi.com/api/basketball/{api}", headers={
-            'X-RapidAPI-Key': config.api_key,
-            'X-RapidAPI-Host': config.api_host
-        })
-    if response.status_code == 200:
-        data = response.json()
+
+def savejsonNBAData(filename, teamdata):
+    with open(f"{filename}.json", "w") as output:
+        output.write(str(teamdata))
+
+def fetchAPI(api, offline=False):
+    if offline:
+        pass
     else:
-        print("Error")
-    return data
+        response = requests.get(
+            f"https://basketapi1.p.rapidapi.com/api/basketball/{api}", headers={
+                'X-RapidAPI-Key': config.api_key,
+                'X-RapidAPI-Host': config.api_host
+            })
+        if response.status_code == 200:
+            data = response.json()
+        else:
+            print("Error")
+        return data
 
 
 def saveTeams(data):
@@ -49,7 +57,7 @@ def displayTeams():
         print(f"{i + 1}. {team['team']['name']}")
 
 
-def uservalidation():
+def userValidation():
     displayTeams()
     while True:
         try:
@@ -88,11 +96,13 @@ def displayPreviousGame(userTeamPreviousgame):
 
 
 def main():
-    teamData = fetchAPI("tournament/132/season/45096/standings/total")
+    teamData = fetchAPI("tournament/132/season/45096/standings/total", ISOFFINE)
+    savejsonNBAData("nbadata", teamData)
     saveTeams(teamData)
-    userTeam = uservalidation()
-    userTeamPreviousgame = fetchAPI(f"team/{userTeam['team']['id']}/matches/previous/0")
-    userTeamNextgame = fetchAPI(f"team/{userTeam['team']['id']}/matches/next/0")
+    userTeam = userValidation()
+    userTeamPreviousgame = fetchAPI(f"team/{userTeam['team']['id']}/matches/previous/0", ISOFFINE)
+    savejsonNBAData("gamedata", userTeamPreviousgame)
+    userTeamNextgame = fetchAPI(f"team/{userTeam['team']['id']}/matches/next/0", ISOFFINE)
     displayPreviousGame(userTeamPreviousgame)
     displayNextGame(userTeamNextgame)
 
